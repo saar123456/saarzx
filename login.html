@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style1.css">
+    <title>Halaman Login</title>
+</head>
+
+<body>
+    <div class="container">
+        <form class="login-form" id="loginForm">
+            <h1>Login</h1>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required minlength="3" maxlength="15" />
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required minlength="6" />
+            </div>
+            <button type="submit">Masuk</button>
+            <p class="message">Belum punya akun? <a href="#" id="registerLink">Daftar</a></p>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Mencegah pengiriman form
+
+            // Mengambil nilai input
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Mengambil password yang disimpan dari local storage
+            const storedPassword = localStorage.getItem(username);
+
+            // Validasi password
+            if (storedPassword === null) {
+                alert('Username tidak ditemukan. Silakan daftar terlebih dahulu.');
+                return;
+            }
+
+            if (storedPassword !== password) {
+                alert('Password salah. Silakan coba lagi.');
+                return;
+            }
+
+            // Redirect ke halaman utama setelah login
+            window.location.href = 'index.html'; // Ganti dengan nama file halaman utama
+        });
+
+        // Link untuk registrasi
+        document.getElementById('registerLink').addEventListener('click', function () {
+            const username = prompt('Masukkan username baru:');
+            const password = prompt('Masukkan password baru:');
+
+            if (username && password) {
+                localStorage.setItem(username, password);
+                alert('Registrasi berhasil! Sekarang Anda dapat login.');
+            } else {
+                alert('Registrasi dibatalkan.');
+            }
+        });
+    </script>
+</body>
+
+</html>
