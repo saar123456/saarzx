@@ -1,67 +1,475 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contoh Halaman Web Semantik</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Aplikasi Pengelola Keuangan</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* styles.css */
+
+        /* Umum */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background-color: #213fe4;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .header nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .header nav ul li {
+            margin: 0 15px;
+        }
+
+        .header nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .header nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .summary {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary h2 {
+            color: #333;
+        }
+
+        .summary .total-balance, .summary .recent-transactions {
+            margin-top: 20px;
+        }
+
+        .summary .total-balance p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d7f2f;
+        }
+
+        .summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .summary ul li {
+            margin-bottom: 10px;
+        }
+
+        .charts {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Tombol Aksi */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .action-buttons button {
+            background-color: #2354db;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .action-buttons button:hover {
+            background-color: #327aa1;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-content input, .modal-content select, .modal-content button {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            background-color: #2345da;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #327aa1;
+        }
+
+        .close-modal {
+            background-color: #f44336;
+        }
+
+        .close-modal:hover {
+            background-color: #d32f2f;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        /* Responsif untuk layar kecil */
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .charts, .summary {
+                flex: none;
+                width: 100%;
+            }
+
+            .summary ul {
+                padding-left: 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Filter Transaksi */
+        .filter-container {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-container select {
+            padding: 10px;
+            font-size: 16px;
+            margin-left: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Laporan */
+        #report-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
-
 <body>
-
-    <!-- Bagian Header -->
-    <header>
-        <h1>Halaman WEB SAAR DISINI</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">HOME</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#service">Service</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Bagian Konten Utama -->
-    <main>
-        <article>
-            <section id="home">
-                <h2>Selamat Datang di Situs SAAR DISINI</h2>
-                <p>Ini adalah sebuah website sederhana menggunakan elemen Semantik HTML.</p>
-                <img src="123.jpg" alt="Banner" class="banner-image">
-            </section>
-
-            <section id="about">
-                <h2>About Us</h2>
-                <p>Kami adalah tim pengembang website yang profesional dalam membangun situs modern yang responsif.</p>
-            </section>
-
-            <section id="service">
-                <h2>Kami Siap Melayani Pembuatan:</h2>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Aplikasi Pengelola Keuangan</h1>
+            <nav>
                 <ul>
-                    <li>Web Design</li>
-                    <li>Web Development</li>
-                    <li>SEO Optimization</li>
+                    <li><a href="#">Beranda</a></li>
+                    <li><a href="#">Transaksi</a></li>
+                    <li><a href="#">Laporan</a></li>
+                    <li><a href="#">Profil</a></li>
                 </ul>
-            </section>
-        </article>
+            </nav>
+        </header>
 
-        <!-- Bagian Sidebar -->
-        <aside>
-            <h3>Latest News</h3>
-                <p><strong>Peluncuran Layanan Baru:</strong> Kami dengan bangga mengumumkan peluncuran layanan terbaru kami:
-                    <em>Pengembangan Aplikasi Mobile</em>! Dengan semakin banyaknya pengguna yang beralih ke perangkat mobile, kami
-                    berkomitmen untuk membantu bisnis Anda menjangkau pelanggan melalui aplikasi yang intuitif dan efisien. Tim kami
-                    siap membantu Anda mulai dari tahap perencanaan hingga peluncuran. Untuk informasi lebih lanjut, <a href="#contact">hubungi kami</a> atau kunjungi halaman layanan kami.</p>.</p>
-            <p>Subscribe to our newsletter for updates.</p>
-        </aside>
-    </main>
+        <!-- Filter Kategori -->
+        <div class="filter-container">
+            <label for="filter-category">Filter Kategori:</label>
+            <select id="filter-category">
+                <option value="all">Semua Kategori</option>
+                <option value="makanan">Makanan</option>
+                <option value="transportasi">Transportasi</option>
+                <option value="hiburan">Hiburan</option>
+                <option value="lainnya">Lainnya</option>
+            </select>
+        </div>
 
-    <!-- Bagian Footer -->
-    <footer>
-        <p>&copy; 2024 SAAR. All rights reserved.</p>
-    </footer>
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <div class="summary">
+                <h2>Ringkasan Keuangan</h2>
+                <div class="total-balance">
+                    <h3>Saldo Total</h3>
+                    <p>Rp 5.000.000</p>
+                </div>
+                <div class="recent-transactions">
+                    <h3>Transaksi Terbaru</h3>
+                    <ul>
+                        <li>Pemasukan: Rp 1.000.000</li>
+                        <li>Pengeluaran: Rp 500.000</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="charts">
+                <h3>Grafik Keuangan</h3>
+                <div class="chart-container">
+                    <canvas id="finance-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="action-buttons">
+            <button class="add-transaction">Tambah Transaksi</button>
+            <button class="view-report">Lihat Laporan</button>
+            <button class="reset-transactions">Reset Transaksi</button>
+        </div>
+
+        <!-- Modal Tambah Transaksi -->
+        <div id="transaction-modal" class="modal">
+            <div class="modal-content">
+                <h2>Tambah Transaksi</h2>
+                <form id="transaction-form">
+                    <label for="amount">Jumlah:</label>
+                    <input type="number" id="amount" required>
+
+                    <label for="category">Kategori:</label>
+                    <select id="category" required>
+                        <option value="makanan">Makanan</option>
+                        <option value="transportasi">Transportasi</option>
+                        <option value="hiburan">Hiburan</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+
+                    <label for="type">Jenis:</label>
+                    <select id="type" required>
+                        <option value="pemasukan">Pemasukan</option>
+                        <option value="pengeluaran">Pengeluaran</option>
+                    </select>
+
+                    <button type="submit">Simpan Transaksi</button>
+                    <button type="button" class="close-modal">Tutup</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal Laporan Keuangan -->
+        <div id="report-modal" class="modal">
+            <div class="modal-content">
+                <h2>Laporan Keuangan</h2>
+                <div id="report-container">
+                    <p>Tidak ada data transaksi.</p>
+                </div>
+                <button type="button" class="close-report-modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ambil elemen modal dan tombol
+        const modal = document.getElementById('transaction-modal');
+        const openModalButton = document.querySelector('.add-transaction');
+        const closeModalButton = document.querySelector('.close-modal');
+        const resetButton = document.querySelector('.reset-transactions');
+        const reportModal = document.getElementById('report-modal');
+        const openReportButton = document.querySelector('.view-report');
+        const closeReportModalButton = document.querySelector('.close-report-modal');
+
+        const transactions = [];
+        const financeChartCtx = document.getElementById('finance-chart').getContext('2d');
+
+        let financeChart = new Chart(financeChartCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Pemasukan', 'Pengeluaran'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#2d7f2f', '#e02d2d']
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // Fungsi untuk membuka modal tambah transaksi
+        openModalButton.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        openReportButton.addEventListener('click', () => {
+            updateReport();
+            reportModal.style.display = 'block';
+        });
+
+        closeReportModalButton.addEventListener('click', () => {
+            reportModal.style.display = 'none';
+        });
+
+        // Fungsi untuk memperbarui laporan transaksi
+        function updateReport() {
+            const reportContainer = document.getElementById('report-container');
+            if (transactions.length === 0) {
+                reportContainer.innerHTML = '<p>Tidak ada data transaksi.</p>';
+                return;
+            }
+
+            let tableHTML = '<table><thead><tr><th>Jumlah</th><th>Kategori</th><th>Jenis</th></tr></thead><tbody>';
+            transactions.forEach(trans => {
+                tableHTML += `<tr><td>Rp ${trans.amount}</td><td>${trans.category}</td><td>${trans.type}</td></tr>`;
+            });
+            tableHTML += '</tbody></table>';
+
+            reportContainer.innerHTML = tableHTML;
+        }
+
+        // Fungsi untuk menambah transaksi
+        document.getElementById('transaction-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const amount = parseInt(document.getElementById('amount').value);
+            const category = document.getElementById('category').value;
+            const type = document.getElementById('type').value;
+
+            transactions.push({ amount, category, type });
+
+            updateSummary();
+            updateChart();
+            modal.style.display = 'none';
+        });
+
+        function updateSummary() {
+            const totalBalanceEl = document.querySelector('.total-balance p');
+            const recentTransactionsEl = document.querySelector('.recent-transactions ul');
+
+            let totalBalance = 0;
+            let recentTransactions = '';
+
+            transactions.forEach(trans => {
+                if (trans.type === 'pemasukan') {
+                    totalBalance += trans.amount;
+                } else {
+                    totalBalance -= trans.amount;
+                }
+            });
+
+            transactions.slice(-5).forEach(trans => {
+                recentTransactions += `<li>${trans.type.charAt(0).toUpperCase() + trans.type.slice(1)}: Rp ${trans.amount}</li>`;
+            });
+
+            totalBalanceEl.textContent = `Rp ${totalBalance}`;
+            recentTransactionsEl.innerHTML = recentTransactions;
+        }
+
+        function updateChart() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            transactions.forEach(trans => {
+                if (trans.type === 'pemasukan') {
+                    totalIncome += trans.amount;
+                } else {
+                    totalExpense += trans.amount;
+                }
+            });
+
+            financeChart.data.datasets[0].data = [totalIncome, totalExpense];
+            financeChart.update();
+        }
+
+        resetButton.addEventListener('click', () => {
+            transactions.length = 0;
+            updateSummary();
+            updateChart();
+        });
+    </script>
 </body>
-
 </html>
